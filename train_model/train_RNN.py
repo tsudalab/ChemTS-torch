@@ -1,14 +1,14 @@
 import argparse
 import os
-import pickle
+import sys
 
 import numpy as np
 import yaml
 
-from chemts.preprocessing import read_smiles_dataset, tokenize_smiles
+from chemts.preprocessing import read_smiles_dataset
 from model.dataset import SmilesDataset, collate_fn
-from model.model import SmilesPredModule
-from model.tokenizer import Tokenizer
+from model.model import StringPredModule
+from model.tokenizer import SmilesTokenizer, SelfiesTokenizer
 
 from sklearn.model_selection import train_test_split
 import torch
@@ -29,24 +29,6 @@ def get_parser():
     )
     return parser.parse_args()
 
-
-def prepare_data(smiles, all_smiles):
-    all_smiles_index = []
-    for i in range(len(all_smiles)):
-        smiles_index = []
-        for j in range(len(all_smiles[i])):
-            smiles_index.append(smiles.index(all_smiles[i][j]))
-        all_smiles_index.append(smiles_index)
-    X_train = all_smiles_index
-    y_train = []
-    for i in range(len(X_train)):
-        x1 = X_train[i]
-        x2 = x1[1:len(x1)]
-        x2.append(0)
-        y_train.append(x2)
-    return X_train, y_train
-
-
 def main():
     args = get_parser()
     # Setup configuration
@@ -66,21 +48,22 @@ def main():
 
     # Prepare training dataset
     original_smiles = read_smiles_dataset(conf['Data']["dataset"])
+    if conf["Data"]["format"].lower() == "smiles":
+        Tokenizer = SmilesTokenizer
+    elif conf["Data"]["format"].lower() == "selfies":
+        Tokenizer = SelfiesTokenizer
+    else:
+        raise ValueError(f'Data format should be "smiles" or "selfies", but got "{conf["Data"]["format"]}"!')
     tokenizer = Tokenizer.from_smiles(original_smiles)
-    tokenizer.save_vocab(conf['Data']['output_token'])
+    tokenizer.save_tokens(conf['Data']['output_token'])
     print(f"[INFO] Save generated tokens to {conf['Data']['output_token']}")
     
-    X, y = tokenizer.prepare_data()
+    X, y = tokenizer.prepare_data(original_smiles)
 
-    print(f"vocabulary:\n{tokenizer.vocab}\n"
-          f"size of SMILES list: {tokenizer.data_size}")
+    print(f"vocabulary:\n{tokenizer.tokens}\n"
+          f"size of SMILES list: {len(X)}")
     
-    # Data pre-processing
-    # X = torch.nn.utils.rnn.pad_sequence([torch.tensor(_X) for _X in X], batch_first=True, padding_value=0)
-    # y = torch.nn.utils.rnn.pad_sequence([torch.tensor(_y) for _y in y], batch_first=True, padding_value=0)
-
-    # print(f"shape of y_train_one_hot: {y.shape}")
-    conf["Data"]["vocab_len"] = len(tokenizer.vocab)
+    conf["Data"]["vocab_len"] = len(tokenizer.token_set)
     
     with open(args.config, 'w') as file:
         yaml.dump(conf, file)
@@ -100,7 +83,7 @@ def main():
 
     # Build model
     
-    model = SmilesPredModule(conf)
+    model = StringPredModule(conf)
     
     logger = CSVLogger("logs", name="smiles_rnn_training")
     checkpoint_callback = ModelCheckpoint(

@@ -1,9 +1,10 @@
 Data:
   dataset: ../data/250k_rndm_zinc_drugs_clean_conh.smi
-  output_model_dir: ../model/user_trained
-  output_token: ../model/user_trained/tokens.txt
+  format: selfies
+  output_model_dir: ../model/user_trained_selfies
+  output_token: ../model/user_trained_selfies/selfies_tokens.txt
   seq_len: 74
-  vocab_len: 41
+  vocab_len: 69
 Model:
   dropout_rate: 0.2
   units: 256

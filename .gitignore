@@ -1,2 +1,3 @@
 train_model/logs/*
-model/user_trained/*
+model/*
+result/*

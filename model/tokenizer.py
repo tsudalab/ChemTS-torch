@@ -1,28 +1,21 @@
 import re
+from abc import abstractmethod
+import selfies
 
-class Tokenizer:
+class BaseTokenizer:
     def __init__(
         self,
-        token_set,
-        tokenized_smiles=None):
+        token_set):
         self.token_set = token_set        
-        self.tokenized_smiles = tokenized_smiles
     
     @classmethod
-    def from_smiles(
-        cls,
-        smiles_list):
-        tokenized_smiles_list = []
-        unique_token_set = set()
-        for smi in smiles_list:
-            tokenized_smiles = cls.tokenize_smiles(smi)
-            unique_token_set |= set(tokenized_smiles)
-            tokenized_smiles_list.append(tokenized_smiles)
-        token_set = sorted(list(unique_token_set))
-        token_set.insert(0, '<eos>')
-        token_set.insert(0, '<bos>')
-        token_set.insert(0, '<pad>')
-        return cls(token_set, tokenized_smiles_list)
+    @abstractmethod
+    def from_smiles(cls):
+        pass
+    
+    @abstractmethod
+    def tokenize_string(self, string):
+        pass
     
     @classmethod
     def from_file(
@@ -62,15 +55,76 @@ class Tokenizer:
         return self.token_set.index('<pad>')
     
     @property
-    def vocab(self):
+    def tokens(self):
         return self.token_set
     
-    @property
-    def data_size(self):
-        return len(self.tokenized_smiles)
+    def prepare_data(self, smiles_list):
+        tokenized_string_list = []
+        for smi in smiles_list:
+            tokenized_smiles = self.tokenize_string(smi)
+            tokenized_string_list.append(tokenized_smiles)
+        X, y = [], []
+        for ts in tokenized_string_list:
+            X.append(self.tokens_to_ints(ts, add_bos=True, add_eos=False))
+            y.append(self.tokens_to_ints(ts, add_bos=False, add_eos=True))
+        return X, y
     
-    @staticmethod
-    def tokenize_smiles(smiles):
+    def string_to_ints(self, string, add_bos=False, add_eos=False):
+        tokens = self.tokenize_string(string)
+        if add_bos:
+            tokens.insert(0, self.bos)
+        if add_eos:
+            tokens.append(self.eos)
+        ints = self.tokens_to_ints(tokens)
+        return ints
+    
+    def tokens_to_ints(self, tokens, add_bos=False, add_eos=False):
+        ints = [self.token_set.index(token) for token in tokens]
+        if add_bos:
+            ints.insert(0, self.token_set.index(self.bos))
+        if add_eos:
+            ints.append(self.token_set.index(self.eos))
+        return ints
+    
+    def ints_to_tokens(self, ints, remove_bos=False, remove_eos=False):
+        if remove_bos:
+            bos_pos = ints.index(self.bos_id)
+            ints = ints[bos_pos+1:]
+        if remove_eos:
+            eos_pos = ints.index(self.eos_id)
+            ints = ints[:eos_pos]
+        tokens = [self.token_set[i] for i in ints]
+        return tokens
+    
+    def ints_to_string(self, ints, remove_bos=False, remove_eos=False):
+        tokens = self.ints_to_tokens(ints, remove_bos, remove_eos)
+        smi = "".join(tokens)
+        return smi
+    
+    def save_tokens(self, path_file):
+        with open(path_file, "w") as f:
+            for v in self.token_set:
+                f.write(f"{v}\n")
+                
+class SmilesTokenizer(BaseTokenizer):
+    def __init__(self, token_set):
+        super().__init__(token_set)
+        
+    @classmethod
+    def from_smiles(
+        cls,
+        smiles_list):
+        unique_token_set = set()
+        for smi in smiles_list:
+            tokenized_smiles = cls.tokenize_string(smi)
+            unique_token_set |= set(tokenized_smiles)
+        token_set = sorted(list(unique_token_set))
+        token_set.insert(0, '<eos>')
+        token_set.insert(0, '<bos>')
+        token_set.insert(0, '<pad>')
+        return cls(token_set)
+        
+    def tokenize_string(self, smiles):
         """
         This function is based on https://github.com/pschwllr/MolecularTransformer#pre-processing
         Modified by Shoichi Ishida
@@ -81,46 +135,44 @@ class Tokenizer:
         assert smiles == ''.join(tokens)
         return tokens
     
-    def prepare_data(self):
-        X, y = [], []
-        for ts in self.tokenized_smiles:
-            X.append(self.tok2int(ts, add_bos=True, add_eos=False))
-            y.append(self.tok2int(ts, add_bos=False, add_eos=True))
-        return X, y
-    
-    def smi2int(self, smiles, add_bos=False, add_eos=False):
-        tokens = self.tokenize_smiles(smiles)
-        if add_bos:
-            tokens.insert(0, self.bos)
-        if add_eos:
-            tokens.append(self.eos)
-        ints = self.tok2int(tokens)
-        return ints
-    
-    def tok2int(self, tokens, add_bos=False, add_eos=False):
-        ints = [self.token_set.index(token) for token in tokens]
-        if add_bos:
-            ints.insert(0, self.token_set.index(self.bos))
-        if add_eos:
-            ints.append(self.token_set.index(self.eos))
-        return ints
-    
-    def int2tok(self, ints, remove_bos=False, remove_eos=False):
-        if remove_bos:
-            bos_pos = ints.index(self.bos_id)
-            ints = ints[bos_pos+1:]
-        if remove_eos:
-            eos_pos = ints.index(self.eos_id)
-            ints = ints[:eos_pos]
-        tokens = [self.token_set[i] for i in ints]
-        return tokens
-    
-    def int2smi(self, ints, remove_bos=False, remove_eos=False):
-        tokens = self.int2tok(ints, remove_bos, remove_eos)
+    def ints_to_smiles(self, ints, remove_bos=False, remove_eos=False):
+        tokens = self.ints_to_tokens(ints, remove_bos, remove_eos)
         smi = "".join(tokens)
         return smi
+
+
+class SelfiesTokenizer(BaseTokenizer):
+    def __init__(self, token_set):
+        super().__init__(token_set)
+         
+    @classmethod
+    def from_smiles(
+        cls,
+        smiles_list):
+        selfies_list = [selfies.encoder(smi) for smi in smiles_list]
+        token_set = selfies.get_alphabet_from_selfies(selfies_list)
+        
+        token_set = sorted(list(token_set))
+        token_set.insert(0, '<eos>')
+        token_set.insert(0, '<bos>')
+        token_set.insert(0, '<pad>')
+        return cls(token_set)
     
-    def save_vocab(self, path_file):
-        with open(path_file, "w") as f:
-            for v in self.vocab:
-                f.write(f"{v}\n")
+    def tokenize_string(self, smiles):
+        selfies_str = selfies.encoder(smiles)
+        tokens = list(selfies.split_selfies(selfies_str))
+        assert selfies_str == ''.join(tokens)
+        return tokens
+    
+    def ints_to_smiles(self, ints, remove_bos=False, remove_eos=False):
+        selfies_str = self.ints_to_string(ints, remove_bos, remove_eos)
+        smi = selfies.decoder(selfies_str)
+        return smi
+    
+    def smiles_to_selfies(smiles):
+        selfies_str = selfies.encoder(smiles)
+        return selfies_str
+    
+    def selfies_to_smiles(selfies_str):
+        smiles = selfies.decoder(selfies_str)
+        return smiles

@@ -6,8 +6,7 @@ import numpy as np
 import pandas as pd
 import pickle
 
-from chemts.utils import chem_kn_simulation, build_smiles_from_tokens,\
-    evaluate_node, node_to_add, expanded_node, back_propagation
+from chemts.utils import chem_kn_simulation, evaluate_node, node_to_add, expanded_node, back_propagation
 
 
 class State:

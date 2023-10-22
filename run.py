@@ -15,7 +15,7 @@ from rdkit import RDLogger
 from chemts.mcts import MCTS, State
 from chemts.utils import loaded_model
 from chemts.preprocessing import smi_tokenizer
-from model.tokenizer import Tokenizer
+from model.tokenizer import SmilesTokenizer, SelfiesTokenizer
 
 
 def get_parser():
@@ -196,6 +196,12 @@ def main():
 
     conf['random_generator'] = default_rng(1234) if conf['fix_random_seed'] else default_rng()
 
+    if conf['format'].lower() == "smiles":
+        Tokenizer = SmilesTokenizer
+    elif conf['format'].lower() == "selfies":
+        Tokenizer = SelfiesTokenizer
+    else:
+        raise ValueError(f'Data format should be "smiles" or "selfies", but got "{conf["format"]}"!')
     tokenizer = Tokenizer.from_file(conf['token'])
     logger.info(f"Loaded tokens are {tokenizer.tokens}")
 

@@ -94,7 +94,7 @@ class RNNModel(nn.Module):
 
         return torch.cat(output, -1).cpu().detach().numpy()
     
-class SmilesPredModule(pl.LightningModule):
+class StringPredModule(pl.LightningModule):
     def __init__(self, conf):
         super().__init__()
 
@@ -201,7 +201,7 @@ class SmilesPredModule(pl.LightningModule):
                 optimizer,
                 T_max=self.decay_steps,
                 eta_min=self.lr * self.decay_alpha,
-                verbose=True
+                verbose=False
             )
         else:
             raise RuntimeError(

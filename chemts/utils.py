@@ -11,7 +11,7 @@ from rdkit import Chem
 from rdkit.Chem.MolStandardize import rdMolStandardize
 
 # from chemtsv2.misc.manage_qsub_parallel import run_qsub_parallel
-from model.model import SmilesPredModule
+from model.model import StringPredModule
 
 
 def calc_execution_time(f):
@@ -26,7 +26,7 @@ def calc_execution_time(f):
 
 
 def expanded_node(conf, model, state, tokenizer, logger, threshold=0.995):
-    ints = tokenizer.tok2int(state)
+    ints = tokenizer.tokens_to_ints(state)
     state_preds = model.predict(ints, device=torch.device(conf['device'])) # the sum of state_pred is equal to 1
     sorted_idxs = np.argsort(state_preds)[::-1]
     sorted_preds = state_preds[sorted_idxs]
@@ -39,7 +39,7 @@ def expanded_node(conf, model, state, tokenizer, logger, threshold=0.995):
 
 
 def node_to_add(all_nodes, tokenizer, logger):
-    added_nodes = tokenizer.int2tok(all_nodes)
+    added_nodes = tokenizer.ints_to_tokens(all_nodes)
     logger.debug(added_nodes)
     return added_nodes
 
@@ -51,22 +51,14 @@ def back_propagation(node, reward):
 
 
 def chem_kn_simulation(model, state, tokenizer, conf):
-    ints = tokenizer.tok2int(state)
+    ints = tokenizer.tokens_to_ints(state)
     while not ints[-1] == tokenizer.eos_id:
         state_pred = model.predict(ints, device=torch.device(conf["device"]))
         next_int = conf['random_generator'].choice(range(len(state_pred)), p=state_pred)
         ints.append(next_int)
         if len(ints) > conf['max_len']:
             break
-    return tokenizer.int2smi(ints, True, True)
-
-
-def build_smiles_from_tokens(all_posible, val):
-    total_generated = all_posible
-    generate_tokens = [val[total_generated[j]] for j in range(len(total_generated) - 1)]
-    print(generate_tokens)
-    eos_pos = generate_tokens.index("<eos>")
-    return ''.join(generate_tokens[:eos_pos])
+    return tokenizer.ints_to_smiles(ints, True, True)
 
 
 def has_passed_through_filters(smiles, conf):
@@ -100,7 +92,7 @@ def loaded_model(logger, conf):
         model_conf = yaml.load(f, Loader=yaml.SafeLoader)
     model_ckp = conf["model_setting"]["model_checkpoint"]
     
-    model = SmilesPredModule.load_from_checkpoint(model_ckp, conf=model_conf)
+    model = StringPredModule.load_from_checkpoint(model_ckp, conf=model_conf)
     logger.info(f"Loaded model_weight from {model_ckp}")
 
     return model.rnn_model.to(conf['device'])
