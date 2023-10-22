@@ -7,8 +7,8 @@ import yaml
 
 from chemts.preprocessing import read_smiles_dataset, tokenize_smiles
 from model.dataset import SmilesDataset, collate_fn
-from model.rnn import SmilesPredModule
-from model.vocab import Tokenizer
+from model.model import SmilesPredModule
+from model.tokenizer import Tokenizer
 
 from sklearn.model_selection import train_test_split
 import torch

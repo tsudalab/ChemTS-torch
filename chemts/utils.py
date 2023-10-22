@@ -11,7 +11,7 @@ from rdkit import Chem
 from rdkit.Chem.MolStandardize import rdMolStandardize
 
 # from chemtsv2.misc.manage_qsub_parallel import run_qsub_parallel
-from model.rnn import SmilesPredModule
+from model.model import SmilesPredModule
 
 
 def calc_execution_time(f):

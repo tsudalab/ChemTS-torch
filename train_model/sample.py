@@ -1,6 +1,6 @@
 import yaml
-from model.rnn import SmilesPredModule
-from model.vocab import Tokenizer
+from model.model import SmilesPredModule
+from model.tokenizer import Tokenizer
 
 model_conf = "model_setting.yaml"
 with open(model_conf, "r") as f:

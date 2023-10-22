@@ -22,8 +22,7 @@ class RNNModel(nn.Module):
         self.linear = nn.Linear(conf['Model']['units'], conf['Data']['vocab_len'])
 
     def forward(self, x, lengths):
-        print(x)
-        print(x.shape)
+
         x = self.embedding(x)
         x = pack_padded_sequence(
             input=x, 
@@ -33,12 +32,12 @@ class RNNModel(nn.Module):
         )
         
         x, _ = self.gru(x) # x: batch x seq_len x latent, hidden: n_layers x batch x latent
-
-        # x_shape = x.shape
-        # x = self.linear(x.contiguous().view(-1, x_shape[-1]))
-        # x =  x.contiguous().view(x_shape[0], x_shape[1], -1)
         x = self.linear(x.data)
         return x
+    
+    @torch.no_grad()
+    def predict(self):
+        pass
     
     @torch.no_grad()
     def sample(self, batch_size, bos, eos, device, max_length=140):
