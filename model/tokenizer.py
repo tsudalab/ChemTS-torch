@@ -5,11 +5,7 @@ class Tokenizer:
         self,
         token_set,
         tokenized_smiles=None):
-        self.token_set = token_set
-        self.token_set.insert(0, self.eos)
-        self.token_set.insert(0, self.bos)
-        self.token_set.insert(0, self.pad)
-        
+        self.token_set = token_set        
         self.tokenized_smiles = tokenized_smiles
     
     @classmethod
@@ -22,16 +18,24 @@ class Tokenizer:
             tokenized_smiles = cls.tokenize_smiles(smi)
             unique_token_set |= set(tokenized_smiles)
             tokenized_smiles_list.append(tokenized_smiles)
-        return cls(sorted(list(unique_token_set)), tokenized_smiles_list)
+        token_set = sorted(list(unique_token_set))
+        token_set.insert(0, '<eos>')
+        token_set.insert(0, '<bos>')
+        token_set.insert(0, '<pad>')
+        return cls(token_set, tokenized_smiles_list)
     
     @classmethod
     def from_file(
         cls,
         vocab_file):
         with open(vocab_file, "r") as f:
-            token_set = f.readlines()[3:]
+            token_set = f.readlines()
         token_set = [t.strip('\n') for t in token_set]
         return cls(token_set)
+    
+    @property
+    def tokens(self):
+        return self.token_set
     
     @property
     def bos(self):
@@ -101,14 +105,19 @@ class Tokenizer:
             ints.append(self.token_set.index(self.eos))
         return ints
     
-    def int2smi(self, ints, remove_bos=False, remove_eos=False):
+    def int2tok(self, ints, remove_bos=False, remove_eos=False):
         if remove_bos:
             bos_pos = ints.index(self.bos_id)
             ints = ints[bos_pos+1:]
         if remove_eos:
             eos_pos = ints.index(self.eos_id)
             ints = ints[:eos_pos]
-        smi = "".join([self.token_set[i] for i in ints])
+        tokens = [self.token_set[i] for i in ints]
+        return tokens
+    
+    def int2smi(self, ints, remove_bos=False, remove_eos=False):
+        tokens = self.int2tok(ints, remove_bos, remove_eos)
+        smi = "".join(tokens)
         return smi
     
     def save_vocab(self, path_file):

@@ -36,8 +36,20 @@ class RNNModel(nn.Module):
         return x
     
     @torch.no_grad()
-    def predict(self):
-        pass
+    def predict(self, ints, device):
+        ints = torch.tensor(ints, device=device)
+        token_id = torch.ones((1, 1), 
+            dtype=torch.long, 
+            device=device) * ints[0]
+        
+        x = self.embedding(token_id)
+        x, hidden = self.gru(x)
+
+        for i in range(1, ints.size(0)):
+            x = self.embedding(ints[i].view(1, -1))
+            x, hidden = self.gru(x, hidden)
+        x = torch.softmax(self.linear(x), dim=-1)
+        return x.squeeze().cpu().numpy()
     
     @torch.no_grad()
     def sample(self, batch_size, bos, eos, device, max_length=140):

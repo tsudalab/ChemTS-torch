@@ -15,6 +15,7 @@ from rdkit import RDLogger
 from chemts.mcts import MCTS, State
 from chemts.utils import loaded_model
 from chemts.preprocessing import smi_tokenizer
+from model.tokenizer import Tokenizer
 
 
 def get_parser():
@@ -195,12 +196,12 @@ def main():
 
     conf['random_generator'] = default_rng(1234) if conf['fix_random_seed'] else default_rng()
 
-    with open(conf['token'], 'rb') as f:
-        tokens = pickle.load(f)
-    logger.debug(f"Loaded tokens are {tokens}")
+    tokenizer = Tokenizer.from_file(conf['token'])
+    logger.info(f"Loaded tokens are {tokenizer.tokens}")
 
     state = State() if args.input_smiles is None else State(position=conf["tokenized_smiles"])
-    mcts = MCTS(root_state=state, conf=conf, tokens=tokens, model=model, reward_calculator=reward_calculator, policy_evaluator=policy_evaluator, logger=logger)
+    mcts = MCTS(root_state=state, conf=conf, tokenizer=tokenizer, model=model, 
+        reward_calculator=reward_calculator, policy_evaluator=policy_evaluator, logger=logger)
     mcts.search()
     logger.info("Finished!")
 

@@ -1,4 +1,5 @@
 # Basic setting
+device: 0
 c_val: 1.0
 # threshold_type: [time, generation_num]
 threshold_type: generation_num
@@ -6,9 +7,9 @@ threshold_type: generation_num
 generation_num: 300
 output_dir: result/example01
 model_setting:
-  model_checkpoint: model/user_trained/smi_acc-epoch=34-val_loss=0.39.ckpt
+  model_checkpoint: model/user_trained/smi_acc-epoch=113-val_acc=0.79.ckpt
   model_config: train_model/model_setting.yaml
-token: model/user_trained/tokens.pkl
+token: model/user_trained/tokens.txt
 reward_setting: 
   reward_module: reward.logP_reward
   reward_class: LogP_reward

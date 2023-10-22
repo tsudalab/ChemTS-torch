@@ -11,7 +11,7 @@ from chemts.utils import chem_kn_simulation, build_smiles_from_tokens,\
 
 
 class State:
-    def __init__(self, position=['&'], parent=None):
+    def __init__(self, position=['<bos>'], parent=None):
         self.position = position
         self.visits = 0
         self.total_reward = 0
@@ -66,11 +66,11 @@ class Node:
 
 
 class MCTS:
-    def __init__(self, root_state, conf, tokens, model, reward_calculator, policy_evaluator, logger):
+    def __init__(self, root_state, conf, tokenizer, model, reward_calculator, policy_evaluator, logger):
         self.start_time = time.time()
         self.rootnode = Node(policy_evaluator, state=root_state, conf=conf)
         self.conf = conf
-        self.tokens = tokens
+        self.tokenizer = tokenizer
         self.model = model
         self.reward_calculator = reward_calculator
         self.policy_evaluator = policy_evaluator
@@ -151,7 +151,7 @@ class MCTS:
             self.logger.info(f"state position: {state.position}")
 
             self.logger.debug(f"infinite loop counter (selection): {self.loop_counter_for_selection}")
-            if node.position == '\n':
+            if node.position == '<eos>':
                 back_propagation(node, reward=-1.0)
                 self.loop_counter_for_selection += 1
                 if self.loop_counter_for_selection > self.conf['infinite_loop_threshold_for_selection']:
@@ -162,7 +162,8 @@ class MCTS:
                 self.loop_counter_for_selection = 0
 
             """expansion step"""
-            expanded = expanded_node(self.model, state.position, self.tokens, self.logger, threshold=self.conf['expansion_threshold'])
+            expanded = expanded_node(self.conf, self.model, state.position, 
+                self.tokenizer, self.logger, threshold=self.conf['expansion_threshold'])
             self.logger.debug(f"infinite loop counter (expansion): {self.loop_counter_for_expansion}")
             if set(expanded) == self.expanded_before:
                 self.loop_counter_for_expansion += 1
@@ -176,12 +177,12 @@ class MCTS:
             new_compound = []
             nodeadded = []
             for _ in range(self.conf['simulation_num']):
-                nodeadded_tmp = node_to_add(expanded, self.tokens, self.logger)
+                nodeadded_tmp = node_to_add(expanded, self.tokenizer, self.logger)
                 nodeadded.extend(nodeadded_tmp)
                 for n in nodeadded_tmp:
                     position_tmp = state.position + [n]
-                    all_posible = chem_kn_simulation(self.model, position_tmp, self.tokens, self.conf)
-                    new_compound.append(build_smiles_from_tokens(all_posible, self.tokens))
+                    posible_compound = chem_kn_simulation(self.model, position_tmp, self.tokenizer, self.conf)
+                    new_compound.append(posible_compound)
 
             _gids = list(range(self.gid, self.gid+len(new_compound)))
             self.gid += len(new_compound)

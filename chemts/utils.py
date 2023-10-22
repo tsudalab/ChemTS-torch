@@ -25,12 +25,9 @@ def calc_execution_time(f):
     return wrapper
 
 
-def expanded_node(model, state, val, logger, threshold=0.995):
-    get_int = [val.index(state[j]) for j in range(len(state))]
-    x = np.reshape(get_int, (1, len(get_int)))
-    # model.reset_states()
-    preds = model.predict(torch.tensor(x, device=model.device))
-    state_preds = np.squeeze(preds)  # the sum of state_pred is equal to 1
+def expanded_node(conf, model, state, tokenizer, logger, threshold=0.995):
+    ints = tokenizer.tok2int(state)
+    state_preds = model.predict(ints, device=torch.device(conf['device'])) # the sum of state_pred is equal to 1
     sorted_idxs = np.argsort(state_preds)[::-1]
     sorted_preds = state_preds[sorted_idxs]
     for i, v in enumerate(itertools.accumulate(sorted_preds)):
@@ -41,8 +38,8 @@ def expanded_node(model, state, val, logger, threshold=0.995):
     return sorted_idxs[:i]
 
 
-def node_to_add(all_nodes, val, logger):
-    added_nodes = [val[all_nodes[i]] for i in range(len(all_nodes))]
+def node_to_add(all_nodes, tokenizer, logger):
+    added_nodes = tokenizer.int2tok(all_nodes)
     logger.debug(added_nodes)
     return added_nodes
 
@@ -53,29 +50,23 @@ def back_propagation(node, reward):
         node = node.state.parent_node
 
 
-def chem_kn_simulation(model, state, val, conf):
-    end = "\n"
-    position = []
-    position.extend(state)
-    get_int = [val.index(position[j]) for j in range(len(position))]
-    x = np.reshape(get_int, (1, len(get_int)))
-    # model.reset_states()
-    while not get_int[-1] == val.index(end):
-        preds = model.predict(torch.tensor(x, device=model.device))
-        state_pred = np.squeeze(preds)
+def chem_kn_simulation(model, state, tokenizer, conf):
+    ints = tokenizer.tok2int(state)
+    while not ints[-1] == tokenizer.eos_id:
+        state_pred = model.predict(ints, device=torch.device(conf["device"]))
         next_int = conf['random_generator'].choice(range(len(state_pred)), p=state_pred)
-        get_int.append(next_int)
-        x = np.reshape([next_int], (1, 1))
-        if len(get_int) > conf['max_len']:
+        ints.append(next_int)
+        if len(ints) > conf['max_len']:
             break
-    return get_int
+    return tokenizer.int2smi(ints, True, True)
 
 
 def build_smiles_from_tokens(all_posible, val):
     total_generated = all_posible
     generate_tokens = [val[total_generated[j]] for j in range(len(total_generated) - 1)]
-    generate_tokens.remove("&")
-    return ''.join(generate_tokens)
+    print(generate_tokens)
+    eos_pos = generate_tokens.index("<eos>")
+    return ''.join(generate_tokens[:eos_pos])
 
 
 def has_passed_through_filters(smiles, conf):
@@ -112,7 +103,7 @@ def loaded_model(logger, conf):
     model = SmilesPredModule.load_from_checkpoint(model_ckp, conf=model_conf)
     logger.info(f"Loaded model_weight from {model_ckp}")
 
-    return model
+    return model.rnn_model.to(conf['device'])
 
 
 def evaluate_node(new_compound, generated_dict, reward_calculator, conf, logger, gids):
