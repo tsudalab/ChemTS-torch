@@ -1,0 +1,53 @@
+2023-10-17 00:12:41,067 : INFO : Loaded model_weight from model/user_trained/smi_acc-epoch=34-val_loss=0.39.ckpt 
+2023-10-17 00:12:41,068 : INFO : ========== Configuration ========== 
+2023-10-17 00:12:41,068 : INFO : c_val: 1.0 
+2023-10-17 00:12:41,068 : INFO : threshold_type: generation_num 
+2023-10-17 00:12:41,068 : INFO : generation_num: 300 
+2023-10-17 00:12:41,068 : INFO : output_dir: result/example01 
+2023-10-17 00:12:41,068 : INFO : model_setting: {'model_checkpoint': 'model/user_trained/smi_acc-epoch=34-val_loss=0.39.ckpt', 'model_config': 'train_model/model_setting.yaml'} 
+2023-10-17 00:12:41,068 : INFO : token: model/user_trained/tokens.pkl 
+2023-10-17 00:12:41,068 : INFO : reward_setting: {'reward_module': 'reward.logP_reward', 'reward_class': 'LogP_reward'} 
+2023-10-17 00:12:41,068 : INFO : expansion_threshold: 0.995 
+2023-10-17 00:12:41,068 : INFO : simulation_num: 3 
+2023-10-17 00:12:41,068 : INFO : flush_threshold: -1 
+2023-10-17 00:12:41,068 : INFO : policy_setting: {'policy_module': 'policy.ucb1', 'policy_class': 'Ucb1'} 
+2023-10-17 00:12:41,068 : INFO : save_checkpoint: False 
+2023-10-17 00:12:41,068 : INFO : restart: False 
+2023-10-17 00:12:41,068 : INFO : checkpoint_file: chemtsv2.ckpt.pkl 
+2023-10-17 00:12:41,068 : INFO : use_lipinski_filter: True 
+2023-10-17 00:12:41,068 : INFO : lipinski_filter: {'module': 'filter.lipinski_filter', 'class': 'LipinskiFilter', 'type': 'rule_of_5'} 
+2023-10-17 00:12:41,068 : INFO : use_radical_filter: True 
+2023-10-17 00:12:41,068 : INFO : radical_filter: {'module': 'filter.radical_filter', 'class': 'RadicalFilter'} 
+2023-10-17 00:12:41,068 : INFO : use_pubchem_filter: True 
+2023-10-17 00:12:41,068 : INFO : pubchem_filter: {'module': 'filter.pubchem_filter', 'class': 'PubchemFilter'} 
+2023-10-17 00:12:41,068 : INFO : use_sascore_filter: True 
+2023-10-17 00:12:41,068 : INFO : sascore_filter: {'module': 'filter.sascore_filter', 'class': 'SascoreFilter', 'threshold': 3.5} 
+2023-10-17 00:12:41,068 : INFO : use_ring_size_filter: True 
+2023-10-17 00:12:41,068 : INFO : ring_size_filter: {'module': 'filter.ring_size_filter', 'class': 'RingSizeFilter', 'threshold': 6} 
+2023-10-17 00:12:41,068 : INFO : use_pains_filter: False 
+2023-10-17 00:12:41,068 : INFO : pains_filter: {'module': 'filter.pains_filter', 'class': 'PainsFilter', 'type': ['pains_a']} 
+2023-10-17 00:12:41,068 : INFO : include_filter_result_in_reward: False 
+2023-10-17 00:12:41,068 : INFO : infinite_loop_threshold_for_selection: 1000 
+2023-10-17 00:12:41,068 : INFO : infinite_loop_threshold_for_expansion: 20 
+2023-10-17 00:12:41,068 : INFO : fix_random_seed: False 
+2023-10-17 00:12:41,068 : INFO : batch_reward_calculation: False 
+2023-10-17 00:12:41,068 : INFO : leaf_parallel: False 
+2023-10-17 00:12:41,068 : INFO : leaf_parallel_num: 4 
+2023-10-17 00:12:41,068 : INFO : qsub_parallel: False 
+2023-10-17 00:12:41,068 : INFO : neutralization: False 
+2023-10-17 00:12:41,068 : INFO : debug: False 
+2023-10-17 00:12:41,068 : INFO : max_len: 74 
+2023-10-17 00:12:41,069 : INFO : rnn_vocab_size: 40 
+2023-10-17 00:12:41,069 : INFO : rnn_output_size: 256 
+2023-10-17 00:12:41,069 : INFO : =================================== 
+2023-10-17 00:12:41,138 : INFO : state position: ['&'] 
+2023-10-17 00:12:47,034 : INFO : new compound ['COCc5C([NH-]2O-[n-]4C[NH3+]', 'O=[N+]c1COC1[NH+]2([O-]', 'Nc5[N+]([O-]', 'c1)c5O[C@@H]2C[NH3+]#[C@H]o', 'CCO[O-])C=[n-]-[nH][nH]5C2[C@@H]1OCN2', 'O=[N+][nH]=N[NH-]4)C&O)CN[nH+]/C[C@H](C([O-]c4C/C[C@H]4O7C[C@@]1C1/C[NH+]4CN[nH+]o/C#[N+]1&CON[N+]18[NH-][o+]1C[NH+]#[NH+]2C[NH3+]8C[n-]2', 'N#C#c4C[nH]7N=[N+](CO[C@]4C1)C)C[NH3+]6[C@H]18[NH+]5C8[C@@]1)N[NH+]/C[C@@]1N4C/CO[C@@]4CN[C@H]3c3C[NH+]&C[C@H]o[C@@]n3#N[N+](CO[nH+]6[NH2+]', 'c1C[C@]3C/C[O-])N[n-]5C[o+]#[C@@](OCO[C@@]4C[C@H][C@@]4C/C-c[n-]3C(CN4COC[C@@]3C#[nH]o[o+]2[OH+]8[C@H]1O8N[C@@H][n+]n[nH]c[nH+]4C[n+]4[C@@H]n3C1C', 'CO5C[NH+](C)CC[NH2+]C[NH+][NH-][O-]2C1[C@H]1)[nH])[NH+]/C8C', 'O=O[N+][NH+]c3CO[NH+]5Cc3no[C@]2OC[C@]6CN[NH+]c3CC(-c1)c4CON8O\\C5C[C@H]2C[N+](C[N+]([NH3+][n+]7C1)N[NH-][OH+]', 'Nc[nH+]1C[NH3+][C@H][n+]1', 'c1'] 
+2023-10-17 00:12:47,034 : INFO : state position: ['&'] 
+2023-10-17 00:12:50,854 : INFO : new compound ['C[C@H]3[NH2+][C@@][n+]6C[O-]', 'O=C)N1C[C@H]1=#[N+]c3)C', 'N[C@H]6C-5C(C[C@@H]1=[NH+][O-]#[N+]([C@@H]2[O-]1C#-C[C@@]4C([NH3+])Nn1CC[C@@]c[nH+][nH+][o+]1C2[nH][n-]1', 'c1O-[C@@H]6C#[N+](C8C[C@]2', 'CO[NH-]c/Cc4[O-])C)o[NH+][C@](N7C/C[NH2+][NH3+])[NH+]OC[NH+]8=[NH+](C[NH-]C#N6c1C8[C@H]&C)C[C@@H]2', 'O=Nc2', 'N#c5CO[C@@]1[NH+][nH+]8N[N-][N-]O=&C([N+]N1C#O[OH+]c1', 'c1#[C@@H](O', 'CC1=o1[OH+]#=O\\C1N/C[NH+][C@@]1)[C@H]1=N[O-]', 'O=[NH2+]C4C[C@@H](c[n+]1[nH][NH+]c27O[n+]1[C@@H]n2C[OH+][O-]', 'N#N/C[C@H][C@@H][nH+]4C#OC[NH+][C@@]3[NH3+]5[NH3+]', 'c1-n[n+]18[C@H]2'] 
+2023-10-17 00:12:50,854 : INFO : state position: ['&'] 
+2023-10-17 00:12:54,573 : INFO : new compound ['Cc3)N[n+]1N[NH-]#OO-[nH][nH+]45Nc4', 'O=Oc[nH+]o1C)Cnc1[O-])O/N6[C@H]\\C)C=[o+]1', 'NCc1)C[NH3+]#-[n+]1C)C[C@]2n[n-][n-]', 'c1/C[C@@]1O&Cn4C#[NH+][C@]2\\CN[N-][C@@H]&C[NH2+]O[C@@H]6C[C@@]([O-]', 'Cc1\\C[C@](OCN[NH-]C[NH+]o4[n-]#C#[NH+][C@@]1', 'O=O[C@@H]3CC7C2', 'N#OOC#[C@@H](O6C[C@@]n1C(C[NH3+]', 'c1', 'Ccco3/C\\CO[NH+]1', 'O=C/C[NH+]7[NH2+]C1N[C@H]6C)C#[C@H]4CCC[nH+]&C[NH2+]CO[N+]/C/C[NH3+][OH+]C[N-][o+][nH][nH]7[NH3+][C@@H]1/C[C@H](OO)ON[nH]1N/C[C@]4OC1C[C@@H]1[N+]2C#[NH2+]O[NH-]', 'N#[O-]', 'c1C[NH+][n-]o#NCOC[NH3+]'] 
+2023-10-17 00:12:54,574 : INFO : state position: ['&'] 
+2023-10-17 00:12:56,984 : INFO : new compound ['CC[N+]CC#Nn1C[O-]', 'O=N/C#[NH+]3[C@H]4[NH3+])NC[NH3+])Cc3[NH3+][C@H]5c1[NH3+]3C[N-]/=[N+][C@@H]1N3[NH3+])C[nH]2-n6N', 'NC[NH3+]6C[C@@H]4C([NH+][NH-]C[C@H]2[O-]', 'c1', 'C[C@H](N[n+]1)CNcc2[C@H]#[O-]', 'O=[C@@H]3O[O-]', 'N#N[N-]', 'c1', 'CC[C@@H]4c4N[NH-][NH3+]&C[C@H]([O-]', 'O=OC#O[C@H]1O[C@]1)O/C1C[C@]1', 'Nc5CN[o+][nH+][C@H]1C[C@]1[N+][C@@H][n-]2', 'c1[O-])Cn8N-[o+]3[O-]'] 
+2023-10-17 00:12:56,985 : INFO : state position: ['&'] 
+2023-10-17 00:13:01,291 : INFO : new compound ['CO[C@]3c4C[C@H]2', 'O=', 'NC[NH3+]', 'c18CN=[NH+]=[O-])C)C#N[N-]N[NH-]#NC[N-][n+]1[o+]1O#CN5C5C)O[C@]1[NH3+][C@H]#-[C@@]2[NH3+])C=[NH3+]', 'Cc3#NC5C[C@@H]n1[O-]', 'O=[N+](C[NH-]#C7C[NH-])C=[N+](-cc[n-]4C(O[OH+]=N[C@]4o(=O\\C[n+]1=[O-])c1ON[C@H]&C[N-]NC[NH3+]4CO[n+]4Cn5C[NH2+][n-][NH+]1/C[C@@H]([NH3+]#N[NH3+][C@@]', 'Nc3[O-]#N[N-]N1[O-]', 'c1OC[NH3+]', 'Cc1[NH3+][OH+]', 'O=O[C@@]3N[C@@]&O/C[C@@H]n1)ON7[C@H][C@@]1n3C[OH+]O[C@H](-c1[NH-]#[O-]#N[N+](N(C[NH+][C@H](C#C[NH+](CNN2[C@@H]5C[NH+][C@H]4C#C&CCC&CO[NH3+]1=[O-]', 'NC#N[n-]([NH2+][C@@H]3C5C[NH3+]', 'c1C\\=[n-]4N\\NC[n+]3)n1=[o+]1C#[NH3+]C2C#O)N3&CC[N-]'] 
+2023-10-17 00:13:01,564 : INFO : state position: ['&'] 

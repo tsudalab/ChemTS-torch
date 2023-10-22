@@ -1,0 +1,24 @@
+Data:
+  dataset: ../data/250k_rndm_zinc_drugs_clean_conh.smi
+  output_model_dir: ../model/user_trained
+  output_token: ../model/user_trained/tokens.txt
+  seq_len: 74
+  vocab_len: 41
+Model:
+  dropout_rate: 0.2
+  units: 256
+Seed: 123
+Train:
+  accelerator: gpu
+  batch_size: 512
+  decay_alpha: 0.01
+  decay_steps: 100
+  device: 3
+  epoch: 1000
+  gradient_clip: 2.0
+  learning_rate: 0.001
+  num_workers: 12
+  optimizer: adam
+  patience: 50
+  scheduler: CosineAnnealingLR
+  validation_split: 0.1
