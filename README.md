@@ -43,7 +43,7 @@ Data:
   output_model_dir: pretrained/smiles_zinc250k                  # directory to save model checkpoints
   output_token: pretrained/smiles_zinc250k/smiles_tokens.txt    # path to save tokens
   seq_len: 73                                                   # maximum length of the token sequences
-  vocab_len: 110                                                # size of the token vocabulary
+  vocab_len: 65                                                # size of the token vocabulary
 Model:
   dropout_rate: 0.2                                             # dropout rate
   n_layer: 2                                                    # number of recurrent layers
@@ -67,7 +67,7 @@ Train:
 
 ## Molecule generation
 
-### Configuration
+### Configuration file for de novo generation
 
 To be updated
 

@@ -4,11 +4,11 @@ Data:
   output_model_dir: pretrained/smiles_zinc250k
   output_token: pretrained/smiles_zinc250k/smiles_tokens.txt
   seq_len: 73
-  vocab_len: 110
+  vocab_len: 65
 Model:
   dropout_rate: 0.2
-  n_layer: 2
   hidden_dim: 256
+  n_layer: 2
 Seed: 123
 Train:
   accelerator: gpu

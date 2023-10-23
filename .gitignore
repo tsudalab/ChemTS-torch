@@ -1,3 +1,5 @@
 train_model/logs/*
 model/*
 result/*
+config/*
+!config/setting.yaml

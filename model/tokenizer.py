@@ -14,6 +14,7 @@ class BaseTokenizer:
         pass
     
     @abstractmethod
+    @staticmethod
     def tokenize_string(self, string):
         pass
     
@@ -123,8 +124,9 @@ class SmilesTokenizer(BaseTokenizer):
         token_set.insert(0, '<bos>')
         token_set.insert(0, '<pad>')
         return cls(token_set)
-        
-    def tokenize_string(self, smiles):
+    
+    @ staticmethod
+    def tokenize_string(smiles):
         """
         This function is based on https://github.com/pschwllr/MolecularTransformer#pre-processing
         Modified by Shoichi Ishida
@@ -158,7 +160,8 @@ class SelfiesTokenizer(BaseTokenizer):
         token_set.insert(0, '<pad>')
         return cls(token_set)
     
-    def tokenize_string(self, smiles):
+    @staticmethod
+    def tokenize_string(smiles):
         selfies_str = selfies.encoder(smiles)
         tokens = list(selfies.split_selfies(selfies_str))
         assert selfies_str == ''.join(tokens)
