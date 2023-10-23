@@ -19,7 +19,9 @@ export PYTHONPATH=<YOUR PATH>/ChemTS-torch
 
 ## Train a RNN generative model
 
-Use following steps to train a custom RNN molecule generative model:
+Two pretrained models are provided in the `pretrained/` folder. They are trained on the 250k ZINC data with SMILES and SELFIES, respectively.
+
+You can also follow the steps to train a custom RNN molecule generative model:
 
 1. Prepare a molecule data file in smiles format.
 2. Prepare a configuration file to set parameters for training the model.
@@ -28,6 +30,7 @@ Use following steps to train a custom RNN molecule generative model:
 cd train_model
 python train_RNN.py --config model_setting.yaml
 ```
+4. The checkpoint file of the model with the highest validaiton accuracy will be saved to the path which is set in the configuration file. The checkpoint file is used to reload the trained model for the molecule generation process.
 
 ### Configuration file for training
 
