@@ -1,8 +1,8 @@
 Data:
   dataset: ../data/250k_rndm_zinc_drugs_clean.smi
-  format: selfies
-  output_model_dir: pretrained/selfies_zinc250k
-  output_token: pretrained/selfies_zinc250k/selfies_tokens.txt
+  format: smiles
+  output_model_dir: pretrained/smiles_zinc250k
+  output_token: pretrained/smiles_zinc250k/smiles_tokens.txt
   seq_len: 73
   vocab_len: 110
 Model:

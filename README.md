@@ -36,9 +36,9 @@ Here is an example configuration file `model_setting.yaml`.
 ```
 Data:
   dataset: ../data/250k_rndm_zinc_drugs_clean.smi               # path to the smiles file
-  format: selfies                                               # string-based molecule representation: smiles or selfies
-  output_model_dir: pretrained/selfies_zinc250k                 # directory to save model checkpoints
-  output_token: pretrained/selfies_zinc250k/selfies_tokens.txt  # path to save tokens
+  format: smiles                                                # string-based molecule representation: smiles or selfies
+  output_model_dir: pretrained/smiles_zinc250k                  # directory to save model checkpoints
+  output_token: pretrained/smiles_zinc250k/smiles_tokens.txt    # path to save tokens
   seq_len: 73                                                   # maximum length of the token sequences
   vocab_len: 110                                                # size of the token vocabulary
 Model:
