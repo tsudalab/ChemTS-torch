@@ -35,31 +35,31 @@ Here is an example configuration file `model_setting.yaml`.
 
 ```
 Data:
-  dataset: ../data/250k_rndm_zinc_drugs_clean.smi       # path to the smiles file
-  format: selfies       # string-based molecule representation: smiles or selfies
-  output_model_dir: pretrained/selfies_zinc250k         #
-  output_token: pretrained/selfies_zinc250k/selfies_tokens.txt
-  seq_len: 73
-  vocab_len: 110
+  dataset: ../data/250k_rndm_zinc_drugs_clean.smi               # path to the smiles file
+  format: selfies                                               # string-based molecule representation: smiles or selfies
+  output_model_dir: pretrained/selfies_zinc250k                 # directory to save model checkpoints
+  output_token: pretrained/selfies_zinc250k/selfies_tokens.txt  # path to save tokens
+  seq_len: 73                                                   # maximum length of the token sequences
+  vocab_len: 110                                                # size of the token vocabulary
 Model:
-  dropout_rate: 0.2
-  n_layer: 2
-  hidden_dim: 256
-Seed: 123
+  dropout_rate: 0.2                                             # dropout rate
+  n_layer: 2                                                    # number of recurrent layers
+  hidden_dim: 256                                               # number of hidden features
+Seed: 123                                                       # random seed
 Train:
-  accelerator: gpu
-  batch_size: 512
-  decay_alpha: 0.01
-  decay_steps: 100
-  device: 3
-  epoch: 1000
-  gradient_clip: 2.0
-  learning_rate: 0.001
-  num_workers: 12
-  optimizer: adam
-  patience: 50
-  scheduler: CosineAnnealingLR
-  validation_split: 0.1
+  accelerator: gpu                                              # cpu, gpu for training
+  batch_size: 512                                               # batch size of data
+  decay_alpha: 0.01                                             # decay rate of the optimizer scheduler
+  decay_steps: 100                                              # decay steps of the optimizer scheduler
+  device: 3                                                     # which gpu to use
+  epoch: 1000                                                   # training epochs
+  gradient_clip: 2.0                                            # value for gradient clipping
+  learning_rate: 0.001                                          # learning rate
+  num_workers: 12                                               # number of workers for the dataloader
+  optimizer: adam                                               # optimizer, adam or adamw
+  patience: 50                                                  # patience for early stopping
+  scheduler: CosineAnnealingLR                                  # optimizer scheduler
+  validation_split: 0.1                                         # data split ratio for validation
 ```
 
 ## Molecule generation
