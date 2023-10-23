@@ -1,13 +1,14 @@
 Data:
-  dataset: ../data/250k_rndm_zinc_drugs_clean_conh.smi
+  dataset: ../data/250k_rndm_zinc_drugs_clean.smi
   format: selfies
-  output_model_dir: ../model/user_trained_selfies
-  output_token: ../model/user_trained_selfies/selfies_tokens.txt
-  seq_len: 74
-  vocab_len: 69
+  output_model_dir: pretrained/selfies_zinc250k
+  output_token: pretrained/selfies_zinc250k/selfies_tokens.txt
+  seq_len: 73
+  vocab_len: 110
 Model:
   dropout_rate: 0.2
-  units: 256
+  n_layer: 2
+  hidden_dim: 256
 Seed: 123
 Train:
   accelerator: gpu

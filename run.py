@@ -174,7 +174,7 @@ def main():
     with open(conf["model_setting"]["model_config"], "r") as f:
         model_conf = yaml.load(f, Loader=yaml.SafeLoader)
     conf['max_len'], conf['rnn_vocab_size'], conf['rnn_output_size'] = \
-        model_conf['Data']['seq_len'], model_conf['Data']['vocab_len'], model_conf["Model"]["units"]
+        model_conf['Data']['seq_len'], model_conf['Data']['vocab_len'], model_conf["Model"]["hidden_dim"]
     model = loaded_model(logger, conf)  #WM300 not tested  
     if args.input_smiles is not None:
         logger.info(f"Extend mode: input SMILES = {args.input_smiles}")

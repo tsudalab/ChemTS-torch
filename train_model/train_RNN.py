@@ -60,14 +60,15 @@ def main():
     
     X, y = tokenizer.prepare_data(original_smiles)
 
-    print(f"vocabulary:\n{tokenizer.tokens}\n"
-          f"size of SMILES list: {len(X)}")
+    print(f"[INFO] Vocabulary:\n{tokenizer.tokens}\n"
+          f"[INFO] Size of SMILES list: {len(X)}")
     
     conf["Data"]["vocab_len"] = len(tokenizer.token_set)
+    conf["Data"]["seq_len"] = max([len(x) for x in X])
     
     with open(args.config, 'w') as file:
         yaml.dump(conf, file)
-    print("Config files updated.")
+    print("[INFO] Config files updated with new training data information.")
 
     X_train, X_val, y_train, y_val = train_test_split(
         X, y, test_size=conf['Train']['validation_split'], random_state=conf['Seed'])
@@ -91,7 +92,7 @@ def main():
         monitor="val_acc",
         mode="max",
         dirpath=conf['Data']['output_model_dir'],
-        filename="smi_acc-{epoch:02d}-{val_acc:.2f}")
+        filename="{epoch:02d}-{val_acc:.2f}")
     
     earlystopping_callback = EarlyStopping("val_acc", mode="max", 
         patience=conf["Train"]["patience"])
@@ -104,8 +105,8 @@ def main():
         logger=logger,  
         devices=[conf["Train"]["device"]], 
         callbacks=[checkpoint_callback, earlystopping_callback, model_summary_callback],
-        # gradient_clip_val=conf["Train"]["gradient_clip"])
-    )    
+        gradient_clip_val=conf["Train"]["gradient_clip"])
+
     trainer.fit(
         model=model, 
         train_dataloaders=dataloader_train, 

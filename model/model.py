@@ -15,11 +15,11 @@ class RNNModel(nn.Module):
             embedding_dim=conf['Data']['vocab_len'])
         self.gru = nn.GRU(
             input_size=conf['Data']['vocab_len'],
-            hidden_size=conf['Model']['units'],
-            num_layers=2,
+            hidden_size=conf['Model']['hidden_dim'],
+            num_layers=conf['Model']['n_layer'],
             batch_first=True,
             dropout=conf['Model']['dropout_rate'])
-        self.linear = nn.Linear(conf['Model']['units'], conf['Data']['vocab_len'])
+        self.linear = nn.Linear(conf['Model']['hidden_dim'], conf['Data']['vocab_len'])
 
     def forward(self, x, lengths):
 
