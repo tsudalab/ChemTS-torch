@@ -42,8 +42,8 @@ Data:
   format: smiles                                                # string-based molecule representation: smiles or selfies
   output_model_dir: pretrained/smiles_zinc250k                  # directory to save model checkpoints
   output_token: pretrained/smiles_zinc250k/smiles_tokens.txt    # path to save tokens
-  seq_len: 73                                                   # maximum length of the token sequences
-  vocab_len: 65                                                # size of the token vocabulary
+  seq_len: 73                                                   # maximum length of the token sequences, automatically calculated
+  vocab_len: 65                                                 # size of the token vocabulary, automatically calculated
 Model:
   dropout_rate: 0.2                                             # dropout rate
   n_layer: 2                                                    # number of recurrent layers
@@ -54,7 +54,7 @@ Train:
   batch_size: 512                                               # batch size of data
   decay_alpha: 0.01                                             # decay rate of the optimizer scheduler
   decay_steps: 100                                              # decay steps of the optimizer scheduler
-  device: 3                                                     # which gpu to use
+  device: 3                                                     # which gpu to use, for example, cuda:3
   epoch: 1000                                                   # training epochs
   gradient_clip: 2.0                                            # value for gradient clipping
   learning_rate: 0.001                                          # learning rate
@@ -67,9 +67,14 @@ Train:
 
 ## Molecule generation
 
+```
+python run.py --config config/setting.yaml
+```
+Details to be updated...
+
 ### Configuration file for de novo generation
 
-To be updated
+To be updated...
 
 ## Reference
 [^1]: Ishida, S., Aasawat, T., Sumita, M., Katouda, M., Yoshizawa, T., Yoshizoe, K., Tsuda, K. and Terayama, K., 2023. ChemTSv2: Functional molecular design using de novo molecule generator. Wiley Interdisciplinary Reviews: Computational Molecular Science, p.e1680.
