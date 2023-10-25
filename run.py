@@ -14,7 +14,6 @@ from rdkit import RDLogger
 
 from chemts.mcts import MCTS, State
 from chemts.utils import loaded_model
-from chemts.preprocessing import smi_tokenizer
 from model.tokenizer import SmilesTokenizer, SelfiesTokenizer
 
 
@@ -179,7 +178,6 @@ def main():
     if args.input_smiles is not None:
         logger.info(f"Extend mode: input SMILES = {args.input_smiles}")
         conf["input_smiles"] = args.input_smiles
-        conf["tokenized_smiles"] = smi_tokenizer(conf["input_smiles"])
 
     if conf['threshold_type'] == 'time':  # To avoid user confusion
         conf.pop('generation_num')
@@ -205,7 +203,7 @@ def main():
     tokenizer = Tokenizer.from_file(conf['token'])
     logger.info(f"Loaded tokens are {tokenizer.tokens}")
 
-    state = State() if args.input_smiles is None else State(position=conf["tokenized_smiles"])
+    state = State() if args.input_smiles is None else State(position=Tokenizer.tokenize_string(args.input_smiles, add_bos=True))
     mcts = MCTS(root_state=state, conf=conf, tokenizer=tokenizer, model=model, 
         reward_calculator=reward_calculator, policy_evaluator=policy_evaluator, logger=logger)
     mcts.search()

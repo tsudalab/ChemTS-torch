@@ -1,8 +1,8 @@
 import re
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 import selfies
 
-class BaseTokenizer:
+class BaseTokenizer(ABC):
     def __init__(
         self,
         token_set):
@@ -11,12 +11,12 @@ class BaseTokenizer:
     @classmethod
     @abstractmethod
     def from_smiles(cls):
-        pass
+        raise NotImplementedError()
     
-    @abstractmethod
     @staticmethod
+    @abstractmethod
     def tokenize_string(self, string):
-        pass
+        raise NotImplementedError()
     
     @classmethod
     def from_file(
@@ -126,7 +126,7 @@ class SmilesTokenizer(BaseTokenizer):
         return cls(token_set)
     
     @ staticmethod
-    def tokenize_string(smiles):
+    def tokenize_string(smiles, add_bos=False, add_eos=False):
         """
         This function is based on https://github.com/pschwllr/MolecularTransformer#pre-processing
         Modified by Shoichi Ishida
@@ -135,6 +135,10 @@ class SmilesTokenizer(BaseTokenizer):
         regex = re.compile(pattern)
         tokens = [token for token in regex.findall(smiles)]
         assert smiles == ''.join(tokens)
+        if add_bos:
+            tokens.insert(0, "<bos>")
+        if add_eos:
+            tokens.append("<eos>")
         return tokens
     
     def ints_to_smiles(self, ints, remove_bos=False, remove_eos=False):
@@ -151,6 +155,14 @@ class SelfiesTokenizer(BaseTokenizer):
     def from_smiles(
         cls,
         smiles_list):
+        """Build a SelfiesTokenizer object by extracting tokens from a list of smiles
+
+        Args:
+            smiles_list (List): smiles to extract tokens
+
+        Returns:
+            SelfiesTokenizer
+        """
         selfies_list = [selfies.encoder(smi) for smi in smiles_list]
         token_set = selfies.get_alphabet_from_selfies(selfies_list)
         
@@ -161,10 +173,14 @@ class SelfiesTokenizer(BaseTokenizer):
         return cls(token_set)
     
     @staticmethod
-    def tokenize_string(smiles):
+    def tokenize_string(smiles, add_bos=False, add_eos=False):
         selfies_str = selfies.encoder(smiles)
         tokens = list(selfies.split_selfies(selfies_str))
         assert selfies_str == ''.join(tokens)
+        if add_bos:
+            tokens.insert(0, "<bos>")
+        if add_eos:
+            tokens.append("<eos>")
         return tokens
     
     def ints_to_smiles(self, ints, remove_bos=False, remove_eos=False):
