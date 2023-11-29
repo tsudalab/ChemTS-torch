@@ -7,7 +7,7 @@ ChemTS-torch is a PyTorch implementation based on previous ChemTS works, includi
 - Generative model implemented by PyTorch;
 - Multi-GPU support via PyTorch Lightning;
 - Both SMILES[^4] and SELFIES[^5] available for string-based molecule generation.
-- Transformer now available as the generative model for better generation quality.
+- Transformer available as the generative model for better generation quality.
 
 ## Setup
 ```
@@ -18,13 +18,13 @@ pip install -r requirements.txt
 export PYTHONPATH=<YOUR PATH>/ChemTS-torch
 ```
 
-## Train a RNN generative model
+## Train a RNN/Transformer generative model
 
 Two pretrained models are provided in the `pretrained/` folder. They are trained on the 250k ZINC data with SMILES and SELFIES, respectively.
 
-You can also follow the steps to train a custom RNN molecule generative model:
+You can also follow the steps to train a custom RNN/Transformer molecule generative model:
 
-1. Prepare a molecule data file in smiles format.
+1. Prepare a molecule data file in smiles format. If you want to train a SELFIES predictor, set it in the config file and it will be automatically converted during training.
 2. Prepare a configuration file to set parameters for training the model.
 3. Run the commands.
 ```
@@ -46,9 +46,18 @@ Data:
   seq_len: 73                                                   # maximum length of the token sequences, automatically calculated
   vocab_len: 65                                                 # size of the token vocabulary, automatically calculated
 Model:
-  dropout_rate: 0.2                                             # dropout rate
+  type: transformer                                             # which generative model to use: rnn or transformer
+  dropout_rate: 0.1                                             # dropout rate
+  hidden_dim: 512                                               # number of hidden features
+
+  # if rnn is used:
   n_layer: 2                                                    # number of recurrent layers
-  hidden_dim: 256                                               # number of hidden features
+
+  # if transformer is used:
+  embed_dim: 128                                                # number of embedding features
+  n_heads: 8                                                    # number of attention heads
+  n_layer: 6                                                    # number of transformer blocks
+
 Seed: 123                                                       # random seed
 Train:
   accelerator: gpu                                              # cpu, gpu for training
