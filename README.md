@@ -7,6 +7,7 @@ ChemTS-torch is a PyTorch implementation based on previous ChemTS works, includi
 - Generative model implemented by PyTorch;
 - Multi-GPU support via PyTorch Lightning;
 - Both SMILES[^4] and SELFIES[^5] available for string-based molecule generation.
+- Transformer now available as the generative model for better generation quality.
 
 ## Setup
 ```
