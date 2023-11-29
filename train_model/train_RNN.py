@@ -1,14 +1,12 @@
 import argparse
 import os
-import sys
-
+from functools import partial
 import numpy as np
 import yaml
 
 from chemts.preprocessing import read_smiles_dataset
-from model.dataset import SmilesDataset, collate_fn
+from model.dataset import SmilesDataset
 from model.model import StringPredModule
-from model.tokenizer import SmilesTokenizer, SelfiesTokenizer
 
 from sklearn.model_selection import train_test_split
 import torch
@@ -49,8 +47,10 @@ def main():
     # Prepare training dataset
     original_smiles = read_smiles_dataset(conf['Data']["dataset"])
     if conf["Data"]["format"].lower() == "smiles":
+        from model.tokenizer import SmilesTokenizer
         Tokenizer = SmilesTokenizer
     elif conf["Data"]["format"].lower() == "selfies":
+        from model.tokenizer import SelfiesTokenizer
         Tokenizer = SelfiesTokenizer
     else:
         raise ValueError(f'Data format should be "smiles" or "selfies", but got "{conf["Data"]["format"]}"!')
@@ -72,6 +72,15 @@ def main():
 
     X_train, X_val, y_train, y_val = train_test_split(
         X, y, test_size=conf['Train']['validation_split'], random_state=conf['Seed'])
+    
+    # if conf['Model']['type'] == 'rnn':
+    #     from model.dataset import collate_right_pad
+    #     collate_fn = collate_right_pad
+    # elif conf['Model']['type'] == 'transformer':
+    #     from model.dataset import collate_left_pad
+    #     collate_fn = partial(collate_left_pad, max_len=conf["Data"]["seq_len"])
+    from model.dataset import collate_right_pad
+    collate_fn = collate_right_pad
 
     dataset_train = SmilesDataset(X_train, y_train)
     dataloader_train = DataLoader(
