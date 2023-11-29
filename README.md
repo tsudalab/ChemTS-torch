@@ -81,7 +81,7 @@ Train:
 ```
 python run.py --config config/setting.yaml
 ```
-Details to be updated...
+For reward function setting, please check the information in the ([ChemTSv2 repository])(https://github.com/molecule-generator-collection/ChemTSv2#example-usage-pushpin).
 
 ### Configuration file for de novo generation
 
