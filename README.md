@@ -85,7 +85,7 @@ For reward function setting, please check the information in the ([ChemTSv2 repo
 
 ### Configuration file for de novo generation
 
-To be updated...
+The example configuration file for generation is given in `config/setting.yaml`. The path to the checkpoint produced by training has to be provided. Options/functions are kept unchanged as the ChemTSv2 work, and can be checked ([here])(https://github.com/molecule-generator-collection/ChemTSv2#support-optionfunction-pushpin).
 
 ## Reference
 [^1]: Ishida, S., Aasawat, T., Sumita, M., Katouda, M., Yoshizawa, T., Yoshizoe, K., Tsuda, K. and Terayama, K., 2023. ChemTSv2: Functional molecular design using de novo molecule generator. Wiley Interdisciplinary Reviews: Computational Molecular Science, p.e1680.
