@@ -59,7 +59,17 @@ class BaseTokenizer(ABC):
     def tokens(self):
         return self.token_set
     
-    def prepare_data(self, smiles_list):
+    def prepare_data(self, smiles_list, smiles_augment=0):
+        if smiles_augment > 0:
+            from model.smiles_augment import SmilesEnumerator
+            enumerator = SmilesEnumerator()
+            
+            smiles_new = []
+            for smiles in smiles_list:
+                for i in range(smiles_augment):
+                    smiles_new.append(enumerator.randomize_smiles(smiles))
+            smiles_list = smiles_new
+                
         tokenized_string_list = []
         for smi in smiles_list:
             tokenized_smiles = self.tokenize_string(smi)
@@ -106,7 +116,7 @@ class BaseTokenizer(ABC):
         with open(path_file, "w") as f:
             for v in self.token_set:
                 f.write(f"{v}\n")
-                
+
 class SmilesTokenizer(BaseTokenizer):
     def __init__(self, token_set):
         super().__init__(token_set)
@@ -134,7 +144,7 @@ class SmilesTokenizer(BaseTokenizer):
         pattern =  "(\[[^\]]+]|Br?|Cl?|N|O|S|P|F|I|b|c|n|o|s|p|\(|\)|\.|=|#|-|\+|\\\\|\/|:|~|@|\?|>|\*|\$|\%[0-9]{2}|[0-9])"
         regex = re.compile(pattern)
         tokens = [token for token in regex.findall(smiles)]
-        assert smiles == ''.join(tokens)
+        assert smiles == ''.join(tokens), (smiles, ''.join(tokens))
         if add_bos:
             tokens.insert(0, "<bos>")
         if add_eos:

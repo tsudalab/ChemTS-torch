@@ -58,7 +58,11 @@ def chem_kn_simulation(model, state, tokenizer, conf):
         ints.append(next_int)
         if len(ints) > conf['max_len']:
             break
-    return tokenizer.ints_to_smiles(ints, True, True)
+    try:
+        smiles = tokenizer.ints_to_smiles(ints, True, True)
+    except ValueError as e:
+        smiles = None
+    return smiles
 
 
 def has_passed_through_filters(smiles, conf):
@@ -92,10 +96,10 @@ def loaded_model(logger, conf):
         model_conf = yaml.load(f, Loader=yaml.SafeLoader)
     model_ckp = conf["model_setting"]["model_checkpoint"]
     
-    model = StringPredModule.load_from_checkpoint(model_ckp, conf=model_conf)
+    wrapped_model = StringPredModule.load_from_checkpoint(model_ckp, conf=model_conf)
     logger.info(f"Loaded model_weight from {model_ckp}")
 
-    return model.rnn_model.to(conf['device'])
+    return wrapped_model.model.to(conf['device'])
 
 
 def evaluate_node(new_compound, generated_dict, reward_calculator, conf, logger, gids):
@@ -111,6 +115,10 @@ def evaluate_node(new_compound, generated_dict, reward_calculator, conf, logger,
 
     #check valid smiles
     for i in range(len(new_compound)):
+        
+        if new_compound[i] is None:
+            continue
+        
         mol = Chem.MolFromSmiles(new_compound[i])
         if mol is None:
             continue
