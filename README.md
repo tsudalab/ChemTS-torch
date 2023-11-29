@@ -9,7 +9,7 @@ ChemTS-torch is a PyTorch implementation based on previous ChemTS works, includi
 - Both SMILES[^4] and SELFIES[^5] available for string-based molecule generation.
 - Transformer available as the generative model for better generation quality.
 
-## Setup
+## Environmental Setup
 ```
 cd <YOUR PATH>
 git clone https://github.com/tsudalab/ChemTS-torch
