@@ -45,20 +45,21 @@ Data:
   output_token: pretrained/smiles_zinc250k/smiles_tokens.txt    # path to save tokens
   seq_len: 73                                                   # maximum length of the token sequences, automatically calculated
   vocab_len: 65                                                 # size of the token vocabulary, automatically calculated
+
 Model:
   type: transformer                                             # which generative model to use: rnn or transformer
   dropout_rate: 0.1                                             # dropout rate
   hidden_dim: 512                                               # number of hidden features
 
-  # if rnn is used:
+  ### if rnn is used: ###
   n_layer: 2                                                    # number of recurrent layers
-
-  # if transformer is used:
+  ### if transformer is used: ###
   embed_dim: 128                                                # number of embedding features
   n_heads: 8                                                    # number of attention heads
   n_layer: 6                                                    # number of transformer blocks
 
 Seed: 123                                                       # random seed
+
 Train:
   accelerator: gpu                                              # cpu, gpu for training
   batch_size: 512                                               # batch size of data
